@@ -11,10 +11,9 @@ const Board = () => {
   const handleClick = (x: number, y: number) => {
     const current = state.getBoard()[x][y]
     const next = state.getNext()
-    if (current!) {
+    if (!current) {
       state.setBoard(x, y, next)
-      state.setNext
-      console.log('uc')
+      state.setNext()
     }
   }
 
