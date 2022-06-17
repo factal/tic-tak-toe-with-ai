@@ -1,7 +1,7 @@
 import create from 'zustand'
 
-type SquareState = 'X' | 'O' | null
-type Player = 'X' | 'O'
+export type SquareState = 'X' | 'O' | null
+export type Player = 'X' | 'O'
 
 interface State {
   board: SquareState[][],

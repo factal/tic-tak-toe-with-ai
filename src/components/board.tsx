@@ -1,5 +1,5 @@
 import Square from '@components/square'
-import { useStore } from '@libs/store'
+import { SquareState, useStore } from '@libs/store'
 
 const Board = () => {
   const state =  useStore()
@@ -16,6 +16,27 @@ const Board = () => {
       state.setNext()
     }
   }
+
+  const calculateWinner = (squares: SquareState[][]) => {
+    const lines = [
+      [[0, 0], [1, 0], [2, 0]],
+      [[0, 1], [1, 1], [2, 1]],
+      [[0, 2], [1, 2], [2, 2]],
+      [[0, 0], [0, 1], [0, 2]],
+      [[1, 0], [1, 1], [1, 2]],
+      [[2, 0], [2, 1], [2, 2]],
+      [[0, 0], [1, 1], [2, 2]],
+      [[2, 0], [1, 1], [0, 2]]
+    ];
+    for (let i = 0; i < lines.length; i++) {
+      const [a, b, c] = lines[i];
+      if (squares[a] && squares[a] === squares[b] && squares[a] === squares[c]) {
+        return squares[a];
+      }
+    }
+    return null
+  }
+  
 
   return (
     <div>
@@ -37,5 +58,7 @@ const Board = () => {
     </div>
   )
 }
+
+
 
 export default Board
