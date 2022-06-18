@@ -9,11 +9,22 @@ const Board = () => {
   }
 
   const handleClick = (x: number, y: number) => {
-    const current = state.getBoard()[x][y]
-    const next = state.getNext()
-    if (!current) {
-      state.setBoard(x, y, next)
-      state.setNext()
+    if (!state.getWinner()) {
+      const current = state.getBoard()[x][y]
+      const next = state.getNext()
+      if (!current) {
+        state.setBoard(x, y, next)
+        state.setNext()
+  
+        const winner = calculateWinner(state.getBoard())
+        state.setWinner(winner)
+
+        state.pushHistory(state.get())
+  
+        if (winner) {
+          console.log(state.getWinner())
+        }
+      }
     }
   }
 
@@ -39,7 +50,7 @@ const Board = () => {
   
 
   return (
-    <div>
+    <div style={{margin: 'auto'}}>
       <div className='board-row'>
         {createSquare(0, 0)}
         {createSquare(1, 0)}
@@ -58,7 +69,5 @@ const Board = () => {
     </div>
   )
 }
-
-
 
 export default Board

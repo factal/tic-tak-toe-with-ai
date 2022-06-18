@@ -3,11 +3,12 @@ import { PropsWithChildren } from 'react'
 
 type SquareProps = {
   onClick: () => void,
-  position: [number, number]
+  position: [number, number] // [x, y]
 }
 
 const Square = ({ children, onClick, position }: PropsWithChildren<SquareProps>) => {
   const state =  useStore( state => state.board[position[0]][position[1]] )
+
   return (
     <button className='square' onClick={onClick}>
       {state}
