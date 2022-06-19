@@ -1,4 +1,5 @@
 import Square from '@components/square'
+import { calculateWinner, genBestMove } from '@libs/game-tree'
 import { SquareState, useStore } from '@libs/store'
 
 const Board = () => {
@@ -20,6 +21,17 @@ const Board = () => {
         state.setWinner(winner)
 
         state.pushHistory(state.get())
+
+        if (state.getNext() == 'O') {
+          const board = state.getBoard()
+          const next = state.getNext()
+          const best = genBestMove(board, next)
+          console.log(board, best, next)
+        }
+
+        
+
+        // console.log(state.getHistory())
   
         if (winner) {
           console.log(state.getWinner())
@@ -28,42 +40,24 @@ const Board = () => {
     }
   }
 
-  const calculateWinner = (squares: SquareState[][]) => {
-    const lines = [
-      [[0, 0], [1, 0], [2, 0]],
-      [[0, 1], [1, 1], [2, 1]],
-      [[0, 2], [1, 2], [2, 2]],
-      [[0, 0], [0, 1], [0, 2]],
-      [[1, 0], [1, 1], [1, 2]],
-      [[2, 0], [2, 1], [2, 2]],
-      [[0, 0], [1, 1], [2, 2]],
-      [[2, 0], [1, 1], [0, 2]]
-    ];
-    for (let i = 0; i < lines.length; i++) {
-      const [a, b, c] = lines[i];
-      if (squares[a[0]][a[1]] && squares[a[0]][a[1]] === squares[b[0]][b[1]] && squares[a[0]][a[1]] === squares[c[0]][c[1]]) {
-        return squares[a[0]][a[1]]
-      }
-    }
-    return null
-  }
+
   
 
   return (
     <div style={{margin: 'auto'}}>
       <div className='board-row'>
         {createSquare(0, 0)}
-        {createSquare(1, 0)}
-        {createSquare(2, 0)}
-      </div>
-      <div className='board-row'>
         {createSquare(0, 1)}
-        {createSquare(1, 1)}
-        {createSquare(2, 1)}
+        {createSquare(0, 2)}
       </div>
       <div className='board-row'>
-        {createSquare(0, 2)}
+        {createSquare(1, 0)}
+        {createSquare(1, 1)}
         {createSquare(1, 2)}
+      </div>
+      <div className='board-row'>
+        {createSquare(2, 0)}
+        {createSquare(2, 1)}
         {createSquare(2, 2)}
       </div>
     </div>

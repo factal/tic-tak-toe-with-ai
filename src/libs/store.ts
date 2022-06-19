@@ -12,11 +12,12 @@ interface State {
   next: Player,
   getNext: () => Player,
   setNext: () => void,
-  winner: Player | null,
-  getWinner: () => Player | null,
-  setWinner: (winner: Player | null) => void,
-  hitstory: { board: SquareState[][], next: Player | null,  winner: Player | null }[],
-  pushHistory: (state: State) => void
+  winner: Player | 'tie' |  null,
+  getWinner: () => Player | 'tie' |  null,
+  setWinner: (winner: Player | 'tie' |  null) => void,
+  hitstory: State[],
+  getHistory: () => State[],
+  pushHistory: (newState: State) => void
 }
 
 export const useStore = create<State>( (set, get) => ({
@@ -61,16 +62,18 @@ export const useStore = create<State>( (set, get) => ({
 
   getWinner: () => get().winner,
   
-  setWinner: (winner: Player | null) => {
+  setWinner: (winner: Player | 'tie' |  null) => {
     set( state => ( { ...state, winner } ))
   },
 
   hitstory: [],
 
-  pushHistory: (state: State) => {
+  getHistory: () => get().hitstory,
+
+  pushHistory: (newState: State) => {
     set( state => ({
       ...state,
-      hitstory: [...state.hitstory, state]
+      hitstory: [...state.hitstory, newState]
     }))
   }
 }))

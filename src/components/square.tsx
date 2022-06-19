@@ -3,7 +3,7 @@ import { PropsWithChildren } from 'react'
 
 type SquareProps = {
   onClick: () => void,
-  position: [number, number] // [x, y]
+  position: [number, number] // [y, x]
 }
 
 const Square = ({ children, onClick, position }: PropsWithChildren<SquareProps>) => {
