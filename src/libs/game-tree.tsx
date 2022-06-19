@@ -41,7 +41,8 @@ export const generateNextMoves = (board: SquareState[][]) => {
   return nextMoves
 }
 
-export const genBestMove = (board: SquareState[][], next: Player) => {
+export const genBestMove = (_board: SquareState[][], next: Player) => {
+  const board = _.cloneDeep(_board)
   let bestScore = -Infinity
   // gen next moves
   for (let i = 0; i < board.length; i++) {
