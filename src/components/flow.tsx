@@ -1,7 +1,7 @@
 import { generateFlowGraph } from '@libs/game-tree';
 import { useStore } from '@libs/store';
 import { useCallback , useEffect, useState } from 'react'
-import ReactFlow, { applyEdgeChanges, applyNodeChanges, Edge, EdgeChange, Node, NodeChange } from 'react-flow-renderer'
+import ReactFlow, { applyEdgeChanges, applyNodeChanges, Edge, EdgeChange, MiniMap, Node, NodeChange } from 'react-flow-renderer'
 import Board from './board';
 
 const initialNodes: Node[] = [
@@ -48,12 +48,15 @@ const Flow = () => {
     <>
       <button onClick={onNodeClick}>Generate Flow</button>
       <ReactFlow
-      nodes={nodes}
-      edges={edges}
-      // onClick={onNodeClick}
-      onNodesChange={onNodesChange}
-      onEdgesChange={onEdgesChange}
-      fitView />
+        nodes={nodes}
+        edges={edges}
+        // onClick={onNodeClick}
+        onNodesChange={onNodesChange}
+        onEdgesChange={onEdgesChange}
+        fitView
+      >
+        <MiniMap />
+      </ReactFlow>
     </>
   )
 }

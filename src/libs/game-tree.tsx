@@ -182,6 +182,29 @@ export const minimax = (gameNode: GameNode, player: Player, depth: number,  isMa
 
 export const generateFlowGraph = (gameNode: GameNode, nodes: Node[], edges: Edge[], depth: number = 0, width: number = 0) => {
   const node = generateFlowNode(gameNode, depth, width)
+  if (gameNode.score!) {
+    if (gameNode.score > 0) {
+      const style = {
+        color: 'white',
+        background: '#ff0072',
+        opacity: 0.8
+      }
+      node.style = style
+    } else if (gameNode.score < 0) {
+      const style = {
+        background: '#54c7ec',
+        opacity: 0.9
+      }
+      node.style = style
+    } else if (gameNode.score = 0) {
+      const style = {
+        background: '#00a400',
+        opacity: 0.9
+      }
+      node.style = style
+    }
+  }
+
   nodes.push(node)
 
   let cnt = 0
@@ -195,11 +218,12 @@ export const generateFlowGraph = (gameNode: GameNode, nodes: Node[], edges: Edge
   return { nodes, edges }
 }
 
-export const generateFlowNode = (gameNode: GameNode, depth: number, width: number) => {
+export const generateFlowNode = (gameNode: GameNode, depth: number, width: number): Node => {
   return ({
     id: gameNode.id,
     data: { label: gameNode.board.toString() },
-    position: {x: 100 * width, y: 100 * depth},
+    position: { x: 300 * width + (Math.random() - 0.5) * 300, y: 300 * depth + Math.random() * Math.random() * 600 },
+    style: { opacity: 0.5 }
   })
 }
 
