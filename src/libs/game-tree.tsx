@@ -44,20 +44,22 @@ export const generateNextMoves = (board: SquareState[][]) => {
 export const genBestMove = (_board: SquareState[][], next: Player) => {
   const board = _.cloneDeep(_board)
   let bestScore = -Infinity
+  let bestMove: [number, number] = [0, 0]
   // gen next moves
   for (let i = 0; i < board.length; i++) {
     for (let j = 0; j < board[i].length; j++) {
-      if (!board[i][j]) {
+      if (board[i][j] == null) {
         board[i][j] = next
-        const score = minimax(_.cloneDeep(board), next, 0, true)
+        const score = minimax(board, next === 'X' ? 'O' : 'X', 0, true)
         board[i][j] = null 
         if (score > bestScore) {
           bestScore = score
-          return [i, j]
+          bestMove = [i, j]
         }
       }
     }
   }
+  return bestMove
 }
 
 // minimax pruning
@@ -65,13 +67,10 @@ export const minimax = (board: SquareState[][], player: Player, depth: number, i
   const winner = calculateWinner(board)
   if (winner) {
     if (winner === 'X') {
-      // console.log(board)
       return -1
     } else if (winner === 'O') {
-      console.log(board)
       return 1
     } else if (winner === 'tie') {
-      // console.log(board)
       return 0
     }
   }

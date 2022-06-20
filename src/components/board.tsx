@@ -26,7 +26,7 @@ const Board = () => {
           const board = state.getBoard()
           const next = state.getNext()
           const best = genBestMove(board, next)
-          console.log(board, best, next)
+          console.log(best, next)
         }
 
         
