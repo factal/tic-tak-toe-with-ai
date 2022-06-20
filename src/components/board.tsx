@@ -13,7 +13,7 @@ const Board = () => {
     if (!state.getWinner()) {
       const current = state.getBoard()[x][y]
       
-      const next = state.getNext()
+      let next = state.getNext()
       if (!current) {
         state.setBoard(x, y, next)
         state.setNext()
@@ -35,12 +35,15 @@ const Board = () => {
 
         state.pushHistory(state.get())
 
+
+        next = state.getNext()
+        const best = genBestMove(gameNode, next)
+        console.log(gameNode)
+        console.log(best, next)
+
         if (state.getNext() == 'O') {
           
-          const next = state.getNext()
-          const best = genBestMove(gameNode, next)
-          console.log(gameNode)
-          console.log(best, next)
+          
         }
 
         

@@ -1,7 +1,7 @@
 import { generateFlowGraph } from '@libs/game-tree';
 import { useStore } from '@libs/store';
 import { useCallback , useEffect, useState } from 'react'
-import ReactFlow, { applyEdgeChanges, applyNodeChanges, Edge, EdgeChange, MiniMap, Node, NodeChange } from 'react-flow-renderer'
+import ReactFlow, { applyEdgeChanges, applyNodeChanges, Background, Controls, Edge, EdgeChange, MiniMap, Node, NodeChange } from 'react-flow-renderer'
 import Board from './board';
 
 const initialNodes: Node[] = [
@@ -31,6 +31,7 @@ const Flow = () => {
 
   const onNodeClick = () => {
     const { nodes, edges } = generateFlowGraph(currentNode, [], [])
+    console.log('nodes.length: ', nodes.length)
     setNodes(nodes)
     setEdges(edges)
   }
@@ -56,6 +57,8 @@ const Flow = () => {
         minZoom={0.1}
         fitView
       >
+        <Background />
+        <Controls />
         <MiniMap />
       </ReactFlow>
     </>

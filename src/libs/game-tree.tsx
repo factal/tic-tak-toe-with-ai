@@ -98,7 +98,8 @@ export const genBestMove = (gameNode: GameNode, next: Player) => {
         }
         const nextNode = new GameNode(nextNodeProps)
         gameNode.children.set([i, j], nextNode)
-        const score = minimax(nextNode, next === 'X' ? 'O' : 'X', 0, true)
+        // const score = minimax(nextNode, next === 'X' ? 'O' : 'X', 0, true)
+        const score = alphaBeta(nextNode, next === 'X' ? 'O' : 'X', 0, -Infinity, Infinity, true)
 
         board[i][j] = null 
         if (score > bestScore) {
@@ -109,6 +110,80 @@ export const genBestMove = (gameNode: GameNode, next: Player) => {
     }
   }
   return bestMove
+}
+
+// alpha beta pruning
+export const alphaBeta = (gameNode: GameNode, player: Player, depth: number, alpha: number, beta: number, isMaximizing: boolean) => {
+  const board = gameNode.board
+  const winner = calculateWinner(board)
+  if (winner || depth === 0) {
+    if (winner === 'tie') {
+      return 0
+    }
+    if (winner === 'X') {
+      return 10 - depth
+    }
+    if (winner === 'O') {
+      return -10 + depth
+    }
+  }
+  if (isMaximizing) {
+    let bestScore = -Infinity
+    for (let i = 0; i < board.length; i++) {
+      for (let j = 0; j < board[i].length; j++) {
+        if (board[i][j] == null) {
+          board[i][j] = player
+
+          const nextNodeProps: GameNodeProps = {
+            id: `${gameNode.id}-${i}-${j}`,
+            board: _.cloneDeep(board),
+            depth: gameNode.depth + 1,
+            score: null,
+            children: new Map(),
+            parent: gameNode
+          }
+          const nextNode = new GameNode(nextNodeProps)
+          gameNode.children.set([i, j], nextNode)
+          const score = alphaBeta(nextNode, player === 'X' ? 'O' : 'X', depth - 1, alpha, beta, false)
+          bestScore = Math.max(bestScore, score)
+          alpha = Math.max(alpha, bestScore)
+          if (beta <= alpha) {
+            break
+          }
+          board[i][j] = null
+        }
+      }
+    }
+    return bestScore
+  } else {
+    let bestScore = Infinity
+    for (let i = 0; i < board.length; i++) {
+      for (let j = 0; j < board[i].length; j++) {
+        if (board[i][j] == null) {
+          board[i][j] = player
+
+          const nextNodeProps: GameNodeProps = {
+            id: `${gameNode.id}-${i}-${j}`,
+            board: _.cloneDeep(board),
+            depth: gameNode.depth + 1,
+            score: null,
+            children: new Map(),
+            parent: gameNode
+          }
+          const nextNode = new GameNode(nextNodeProps)
+          gameNode.children.set([i, j], nextNode)
+          const score = alphaBeta(nextNode, player === 'X' ? 'O' : 'X', depth - 1, alpha, beta, true)
+          bestScore = Math.min(bestScore, score)
+          beta = Math.min(beta, bestScore)
+          if (beta <= alpha) {
+            break
+          }
+          board[i][j] = null
+        }
+      }
+    }
+    return bestScore
+  }
 }
 
 export const minimax = (gameNode: GameNode, player: Player, depth: number,  isMaximizing: boolean) => {
