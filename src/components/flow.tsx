@@ -53,6 +53,7 @@ const Flow = () => {
         // onClick={onNodeClick}
         onNodesChange={onNodesChange}
         onEdgesChange={onEdgesChange}
+        minZoom={0.1}
         fitView
       >
         <MiniMap />

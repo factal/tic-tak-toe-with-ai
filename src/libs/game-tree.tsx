@@ -221,8 +221,8 @@ export const generateFlowGraph = (gameNode: GameNode, nodes: Node[], edges: Edge
 export const generateFlowNode = (gameNode: GameNode, depth: number, width: number): Node => {
   return ({
     id: gameNode.id,
-    data: { label: gameNode.board.toString() },
-    position: { x: 300 * width + (Math.random() - 0.5) * 300, y: 300 * depth + Math.random() * Math.random() * 600 },
+    data: { label: gameNode.board.toString(),  },
+    position: { x: 300 * width + (Math.random() * Math.random() - 0.5) * 300, y: 300 * depth + Math.random() * Math.random() * 600 },
     style: { opacity: 0.5 }
   })
 }
@@ -233,4 +233,16 @@ export const generateFlowEdge = (start: GameNode, end: GameNode) => {
     source: start.id,
     target: end.id,
   })
+}
+
+const boardToString = (board: Board) => {
+  return (
+    <div>
+      {board.map( row => (
+        <p>
+          {row.map( square => square ? square : ' ').join('')}
+        </p>
+      ))}
+    </div>
+  )
 }
