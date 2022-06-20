@@ -1,7 +1,6 @@
 import create, { GetState, SetState } from 'zustand'
-
-export type SquareState = 'X' | 'O' | null
-export type Player = 'X' | 'O'
+import { Player, SquareState } from '@libs/types'
+import { GameNode } from '@libs/game-tree'
 
 interface State {
   get: GetState<State>,
@@ -17,7 +16,10 @@ interface State {
   setWinner: (winner: Player | 'tie' |  null) => void,
   hitstory: State[],
   getHistory: () => State[],
-  pushHistory: (newState: State) => void
+  pushHistory: (newState: State) => void,
+  currentNode: GameNode,
+  getcurrentNode: () => GameNode,
+  setcurrentNode: (node: GameNode) => void,
 }
 
 export const useStore = create<State>( (set, get) => ({
@@ -74,6 +76,24 @@ export const useStore = create<State>( (set, get) => ({
     set( state => ({
       ...state,
       hitstory: [...state.hitstory, newState]
+    }))
+  },
+
+  currentNode: new GameNode({
+    id: `null`,
+    board: [],
+    depth: 0,
+    score: null,
+    children: new Map(),
+    parent: null
+  }),
+
+  getcurrentNode: () => get().currentNode,
+
+  setcurrentNode: (node: GameNode) => {
+    set( state => ({
+      ...state,
+      currentNode: node
     }))
   }
 }))

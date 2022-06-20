@@ -9,7 +9,7 @@ function App() {
 
   return (
     <div className="App">
-      {/* <Board /> */}
+      <Board />
       <div style={{height: 800}} >
         <Flow />
       </div>

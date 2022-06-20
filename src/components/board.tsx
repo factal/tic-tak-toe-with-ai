@@ -1,6 +1,6 @@
 import Square from '@components/square'
-import { calculateWinner, genBestMove } from '@libs/game-tree'
-import { SquareState, useStore } from '@libs/store'
+import { calculateWinner, GameNode, GameNodeProps, genBestMove } from '@libs/game-tree'
+import { useStore } from '@libs/store'
 
 const Board = () => {
   const state =  useStore()
@@ -12,10 +12,23 @@ const Board = () => {
   const handleClick = (x: number, y: number) => {
     if (!state.getWinner()) {
       const current = state.getBoard()[x][y]
+      
       const next = state.getNext()
       if (!current) {
         state.setBoard(x, y, next)
         state.setNext()
+        const board = state.getBoard()
+
+        const gameNodeProps: GameNodeProps = {
+          id: `start-${x}-${y}`,
+          board,
+          depth: 0,
+          score: null,
+          children: new Map(),
+          parent: null
+        }
+        const gameNode = new GameNode(gameNodeProps)
+        state.setcurrentNode(gameNode)
   
         const winner = calculateWinner(state.getBoard())
         state.setWinner(winner)
@@ -23,9 +36,10 @@ const Board = () => {
         state.pushHistory(state.get())
 
         if (state.getNext() == 'O') {
-          const board = state.getBoard()
+          
           const next = state.getNext()
-          const best = genBestMove(board, next)
+          const best = genBestMove(gameNode, next)
+          console.log(gameNode)
           console.log(best, next)
         }
 

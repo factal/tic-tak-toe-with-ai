@@ -1,39 +1,61 @@
-import { useState } from 'react'
-import ReactFlow from 'react-flow-renderer'
+import { generateFlowGraph } from '@libs/game-tree';
+import { useStore } from '@libs/store';
+import { useCallback , useEffect, useState } from 'react'
+import ReactFlow, { applyEdgeChanges, applyNodeChanges, Edge, EdgeChange, Node, NodeChange } from 'react-flow-renderer'
 import Board from './board';
 
-const initialNodes = [
+const initialNodes: Node[] = [
   {
     id: '1',
     type: 'input',
     data: { label: 'Input Node' },
-    position: { x: 250, y: 25 },
-  },
-
-  {
-    id: '2',
-    // you can also pass a React component as a label
-    data: { label: <Board /> },
-    position: { x: 100, y: 125 },
+    position: { x: 0, y: 0 },
   },
   {
     id: '3',
     type: 'output',
     data: { label: 'Output Node' },
-    position: { x: 250, y: 250 },
+    position: { x: 0, y: 200 },
   },
-];
+]
 
-const initialEdges = [
-  { id: 'e1-2', source: '1', target: '2' },
-  { id: 'e2-3', source: '2', target: '3', animated: true },
-];
+const initialEdges: Edge[] = [
+  { id: 'e1-3', source: '1', target: '3', animated: true },
+]
 
-function Flow() {
-  const [nodes, setNodes] = useState(initialNodes);
-  const [edges, setEdges] = useState(initialEdges);
+const Flow = () => {
+  const currentNode = useStore( state => state.getcurrentNode() )
 
-  return <ReactFlow nodes={nodes} edges={edges} fitView />
+  const [nodes, setNodes] = useState(initialNodes)
+  const [edges, setEdges] = useState(initialEdges)
+
+  const onNodeClick = () => {
+    const { nodes, edges } = generateFlowGraph(currentNode, [], [])
+    setNodes(nodes)
+    setEdges(edges)
+  }
+
+  const onNodesChange = useCallback(
+    (changes: NodeChange[]) => setNodes((nds) => applyNodeChanges(changes, nds)),
+    [setNodes]
+  )
+  const onEdgesChange = useCallback(
+    (changes: EdgeChange[]) => setEdges((eds) => applyEdgeChanges(changes, eds)),
+    [setEdges]
+  )
+
+  return (
+    <>
+      <button onClick={onNodeClick}>Generate Flow</button>
+      <ReactFlow
+      nodes={nodes}
+      edges={edges}
+      // onClick={onNodeClick}
+      onNodesChange={onNodesChange}
+      onEdgesChange={onEdgesChange}
+      fitView />
+    </>
+  )
 }
 
 export default Flow
