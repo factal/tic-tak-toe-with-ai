@@ -1,13 +1,13 @@
 import create, { GetState, SetState } from 'zustand'
-import { Player, SquareState } from '@libs/types'
+import { Player, CellState } from '@libs/types'
 import { GameNode } from '@libs/game-tree'
 
 interface State {
   get: GetState<State>,
   set: SetState<State>,
-  board: SquareState[][],
-  getBoard: () => SquareState[][],
-  setBoard: (row: number, col: number, value: SquareState) => void
+  board: CellState[][],
+  getBoard: () => CellState[][],
+  setBoard: (row: number, col: number, value: CellState) => void
   next: Player,
   getNext: () => Player,
   setNext: () => void,
@@ -34,7 +34,7 @@ export const useStore = create<State>( (set, get) => ({
 
   getBoard: () => get().board,
 
-  setBoard: (row: number, col: number, value: SquareState) => {
+  setBoard: (row: number, col: number, value: CellState) => {
     set( state => ({
       ...state,
       board: [

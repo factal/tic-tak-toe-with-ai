@@ -38,7 +38,7 @@ export class GameNode {
 //   nodes: GameNode[] =[this.currentNode]
 // }
 
-export const calculateWinner = (board: Board) => {
+export const calcWinner = (board: Board) => {
   const lines = [
     [[0, 0], [1, 0], [2, 0]],
     [[0, 1], [1, 1], [2, 1]],
@@ -99,7 +99,7 @@ export const genBestMove = (gameNode: GameNode, next: Player) => {
         const nextNode = new GameNode(nextNodeProps)
         gameNode.children.set([i, j], nextNode)
         // const score = minimax(nextNode, next === 'X' ? 'O' : 'X', 0, true)
-        const score = alphaBeta(nextNode, next === 'X' ? 'O' : 'X', 0, -Infinity, Infinity, true)
+        const score = alphaBeta(nextNode, next === 'X' ? 'O' : 'X', 10, -Infinity, Infinity, false)
 
         board[i][j] = null 
         if (score > bestScore) {
@@ -115,21 +115,24 @@ export const genBestMove = (gameNode: GameNode, next: Player) => {
 // alpha beta pruning
 export const alphaBeta = (gameNode: GameNode, player: Player, depth: number, alpha: number, beta: number, isMaximizing: boolean) => {
   const board = gameNode.board
-  const winner = calculateWinner(board)
-  if (winner || depth === 0) {
-    if (winner === 'tie') {
+  const winner = calcWinner(board)
+ 
+  if (winner) {
+    console.log(winner)
+    if (winner == 'tie') {
       return 0
     }
-    if (winner === 'X') {
-      return 10 - depth
+    if (winner == player) {
+      gameNode.score = 1
+      return 1
     }
-    if (winner === 'O') {
-      return -10 + depth
+    if (winner != player) {
+      gameNode.score = -1
+      return -1
     }
   }
   if (isMaximizing) {
-    let bestScore = -Infinity
-    for (let i = 0; i < board.length; i++) {
+    loop: for (let i = 0; i < board.length; i++) {
       for (let j = 0; j < board[i].length; j++) {
         if (board[i][j] == null) {
           board[i][j] = player
@@ -145,19 +148,17 @@ export const alphaBeta = (gameNode: GameNode, player: Player, depth: number, alp
           const nextNode = new GameNode(nextNodeProps)
           gameNode.children.set([i, j], nextNode)
           const score = alphaBeta(nextNode, player === 'X' ? 'O' : 'X', depth - 1, alpha, beta, false)
-          bestScore = Math.max(bestScore, score)
-          alpha = Math.max(alpha, bestScore)
+          alpha = Math.max(alpha, score)
           if (beta <= alpha) {
-            break
+            break loop
           }
           board[i][j] = null
         }
       }
     }
-    return bestScore
+    return alpha
   } else {
-    let bestScore = Infinity
-    for (let i = 0; i < board.length; i++) {
+    loop: for (let i = 0; i < board.length; i++) {
       for (let j = 0; j < board[i].length; j++) {
         if (board[i][j] == null) {
           board[i][j] = player
@@ -173,23 +174,22 @@ export const alphaBeta = (gameNode: GameNode, player: Player, depth: number, alp
           const nextNode = new GameNode(nextNodeProps)
           gameNode.children.set([i, j], nextNode)
           const score = alphaBeta(nextNode, player === 'X' ? 'O' : 'X', depth - 1, alpha, beta, true)
-          bestScore = Math.min(bestScore, score)
-          beta = Math.min(beta, bestScore)
+          beta = Math.min(beta, score)
           if (beta <= alpha) {
-            break
+            break loop
           }
           board[i][j] = null
         }
       }
     }
-    return bestScore
+    return beta
   }
 }
 
 export const minimax = (gameNode: GameNode, player: Player, depth: number,  isMaximizing: boolean) => {
   const board = gameNode.board
 
-  const winner = calculateWinner(board)
+  const winner = calcWinner(board)
   if (winner) {
     if (winner === 'X') {
       gameNode.score = -1
