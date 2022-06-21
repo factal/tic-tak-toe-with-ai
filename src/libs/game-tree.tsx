@@ -1,5 +1,5 @@
 import _ from 'lodash'
-import { Board, Player, Position } from '@libs/types'
+import { Board, Player, Position, Winner } from '@libs/types'
 import { Edge, Node } from 'react-flow-renderer'
 
 export type GameEdge = Map<Position, GameNode> // key: next move position, value: next board
@@ -9,6 +9,7 @@ export type GameNodeProps = {
   board: Board
   depth: number
   score: number | null
+  winner: Winner
   children: GameEdge
   parent: GameNode | null
 }
@@ -17,15 +18,17 @@ export class GameNode {
   board: Board
   depth: number
   score: number | null
+  winner: Winner
   children: GameEdge
   parent: GameNode | null
 
   constructor(props: GameNodeProps) {
-    const { id, board, depth, score, children, parent } = props
+    const { id, board, depth, score, winner, children, parent } = props
     this.id = id
     this.board = board
     this.depth = depth
     this.score = score
+    this.winner = winner
     this.children = children
     this.parent = parent
   }
@@ -93,12 +96,13 @@ export const genBestMove = (gameNode: GameNode, next: Player) => {
           board: _.cloneDeep(board),
           depth: gameNode.depth + 1,
           score: null,
+          winner: null,
           children: new Map(),
           parent: gameNode
         }
         const nextNode = new GameNode(nextNodeProps)
         gameNode.children.set([i, j], nextNode)
-        const score = minimax(nextNode, next === 'X' ? 'O' : 'X', 0, true)
+        const score = minimax(nextNode, next === 'X' ? 'O' : 'X', next, 0, true)
         // const score = alphaBeta(nextNode, next === 'X' ? 'O' : 'X', 10, -Infinity, Infinity, false)
 
         board[i][j] = null 
@@ -142,6 +146,7 @@ export const alphaBeta = (gameNode: GameNode, player: Player, depth: number, alp
             board: _.cloneDeep(board),
             depth: gameNode.depth + 1,
             score: null,
+            winner: null,
             children: new Map(),
             parent: gameNode
           }
@@ -168,6 +173,7 @@ export const alphaBeta = (gameNode: GameNode, player: Player, depth: number, alp
             board: _.cloneDeep(board),
             depth: gameNode.depth + 1,
             score: null,
+            winner: null,
             children: new Map(),
             parent: gameNode
           }
@@ -186,20 +192,21 @@ export const alphaBeta = (gameNode: GameNode, player: Player, depth: number, alp
   }
 }
 
-export const minimax = (gameNode: GameNode, player: Player, depth: number,  isMaximizing: boolean) => {
+export const minimax = (gameNode: GameNode, player: Player, turn: Player, depth: number, isMaximizing: boolean) => {
   const board = gameNode.board
 
   const winner = calcWinner(board)
   if (winner) {
-    console.log(winner)
+    gameNode.winner = winner
     if (winner == 'tie') {
+      gameNode.score = 0
       return 0
     }
-    if (winner == player) {
+    if (winner == turn) {
       gameNode.score = 1
       return 1
     }
-    if (winner != player) {
+    if (winner != turn) {
       gameNode.score = -1
       return -1
     }
@@ -217,13 +224,15 @@ export const minimax = (gameNode: GameNode, player: Player, depth: number,  isMa
             board: _.cloneDeep(board),
             depth: gameNode.depth + 1,
             score: 0,
+            winner: null,
             children: new Map(),
             parent: gameNode
           }
           const nextNode = new GameNode(nextNodeProps)
           gameNode.children.set([i, j], nextNode)
-          const score = minimax(nextNode, player === 'X' ? 'O' : 'X', depth + 1, false)
+          const score = minimax(nextNode, player === 'X' ? 'O' : 'X', turn, depth + 1, false)
           board[i][j] = null
+
           bestScore = Math.max(score, bestScore)
         }
       }
@@ -241,14 +250,16 @@ export const minimax = (gameNode: GameNode, player: Player, depth: number,  isMa
             board: _.cloneDeep(board),
             depth: gameNode.depth + 1,
             score: null,
+            winner: null,
             children: new Map(),
             parent: gameNode
           }
 
           const nextNode = new GameNode(nextNodeProps)
           gameNode.children.set([i, j], nextNode)
-          const score = minimax(nextNode, player === 'X' ? 'O' : 'X', depth + 1, true)
+          const score = minimax(nextNode, player === 'X' ? 'O' : 'X',turn, depth + 1, true)
           board[i][j] = null
+          
           bestScore = Math.min(score, bestScore)
         }
       }

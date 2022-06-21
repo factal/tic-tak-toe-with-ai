@@ -31,7 +31,8 @@ const GameBoard = () => {
       if (!board[x][y]) {
         board[x][y] = player
         setBoard(board)
-        setPlayer(player == 'X' ? 'O' : 'X')
+        const nextPlayer = player == 'X' ? 'O' : 'X'
+        setPlayer(nextPlayer)
 
         // suggest best move
         const gameNodeProps: GameNodeProps = {
@@ -45,9 +46,9 @@ const GameBoard = () => {
         const gameNode = new GameNode(gameNodeProps)
         state.setcurrentNode(gameNode)
 
-        const best = genBestMove(gameNode, player == 'X' ? 'O' : 'X')
+        const best = genBestMove(gameNode, nextPlayer)
         console.log(gameNode)
-        console.log(best, player == 'X' ? 'O' : 'X')
+        console.log(best, nextPlayer)
       } 
 
       const winner = calcWinner(board)
