@@ -98,8 +98,8 @@ export const genBestMove = (gameNode: GameNode, next: Player) => {
         }
         const nextNode = new GameNode(nextNodeProps)
         gameNode.children.set([i, j], nextNode)
-        // const score = minimax(nextNode, next === 'X' ? 'O' : 'X', 0, true)
-        const score = alphaBeta(nextNode, next === 'X' ? 'O' : 'X', 10, -Infinity, Infinity, false)
+        const score = minimax(nextNode, next === 'X' ? 'O' : 'X', 0, true)
+        // const score = alphaBeta(nextNode, next === 'X' ? 'O' : 'X', 10, -Infinity, Infinity, false)
 
         board[i][j] = null 
         if (score > bestScore) {
@@ -191,15 +191,17 @@ export const minimax = (gameNode: GameNode, player: Player, depth: number,  isMa
 
   const winner = calcWinner(board)
   if (winner) {
-    if (winner === 'X') {
-      gameNode.score = -1
-      return -1
-    } else if (winner === 'O') {
+    console.log(winner)
+    if (winner == 'tie') {
+      return 0
+    }
+    if (winner == player) {
       gameNode.score = 1
       return 1
-    } else if (winner === 'tie') {
-      gameNode.score = 0
-      return 0
+    }
+    if (winner != player) {
+      gameNode.score = -1
+      return -1
     }
   }
 
