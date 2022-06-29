@@ -41,7 +41,8 @@ const GameBoard = () => {
           depth: 0,
           score: null,
           children: new Map(),
-          parent: null
+          parent: null,
+          winner: null
         }
         const gameNode = new GameNode(gameNodeProps)
         state.setcurrentNode(gameNode)

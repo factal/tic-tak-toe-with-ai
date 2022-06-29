@@ -85,7 +85,8 @@ export const useStore = create<State>( (set, get) => ({
     depth: 0,
     score: null,
     children: new Map(),
-    parent: null
+    parent: null,
+    winner: null
   }),
 
   getcurrentNode: () => get().currentNode,
